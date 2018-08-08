@@ -1,32 +1,57 @@
-import React, { Component } from 'react';
-// import Map from './Map'
-import Marker from './Marker'
-import {Map, InfoWindow, } from 'google-maps-react';
-import { mapCenter, places} from './ListPlaces'
+import React, {Component} from 'react';
+import {GoogleApiWrapper, InfoWindow, Map, Marker} from 'google-maps-react';
+import {places} from './ListPlaces';
 
-export default class MapContainer extends Component {
+export class MapContainer extends Component {
 
+    constructor() {
+        super();
+        this.state = {
+            showingInfoWindow: false,
+            activeMarker: {},
+            selectedPlace: {},
+        };
+        this.onClick = this.onClick.bind(this);
+    }
 
+    onClick = (props, marker, e) => {
+        this.setState({
+            selectedPlace: props,
+            activeMarker: marker,
+            showingInfoWindow: true
+        });
+    };
 
-  render() {
+    render() {
 
-    return (
-      <main className="main-container">
-        <Map google={this.props.google}
-          initialCenter={mapCenter}
-          zoom={13}
-        >
-          {places.map( (location, index) => (
+        return (
+            <div className="main-container">
+                <Map google={this.props.google} zoom={14} initialCenter={places[0].location}>
 
-                    <Marker key={index}
-                    onClick={this.onMarkerClick}
-                    title={'The marker`s title will appear as a tooltip.'}
-                    position={location.location} />
+                    {places.map((place) => (
+                        <Marker position={place.location} title={place.name} onClick={this.onClick}></Marker>
+                    ))}
 
-
-          ))}
-        </Map>
-      </main>
-    )
-  }
+                    <InfoWindow
+                        marker={this.state.activeMarker}
+                        visible={this.state.showingInfoWindow}>
+                        <div>
+                            <h1>{this.state.selectedPlace.title}</h1>
+                        </div>
+                        {/*<FoursquareContainer place={this.selectedPlace}></FoursquareContainer>*/}
+                    </InfoWindow>
+                </Map>
+            </div>
+        )
+    }
 }
+
+const LoadingContainer = (props) => (
+    <div>loading container!</div>
+)
+
+export default GoogleApiWrapper({
+    apiKey: 'AIzaSyCmtVWzHG114vmGdU3KbPOUnpnP6l2ju-s',
+    language: 'el',
+    LoadingContainer: LoadingContainer
+})(MapContainer)

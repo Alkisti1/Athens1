@@ -1,73 +1,30 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types'
+import React from 'react';
 
+const SideBar = (props) => {
 
+  const { places, listMarker } = props;
 
-class Marker extends Component {
-
-  state = {
-      activeMarker: {},
-      selectPlace: {},
-      showingInfoWindow: false
-    };
-
-  componentDidMount() {
-     this.renderMarker();
-   }
-
-
-  componentDidUpdate(prevProps) {
-  if ((this.props.map !== prevProps.map) ||
-    (this.props.position !== prevProps.position)) {
-      this.renderMarker();
-  }
-}
-
-onMarkerClick = (props, marker) =>
-    this.setState({
-      activeMarker: marker,
-      selectedPlace: props,
-      showingInfoWindow: true
-    });
-
-  onInfoWindowClose = () =>
-    this.setState({
-      activeMarker: null,
-      showingInfoWindow: false
-    });
-
-  onMapClicked = () => {
-    if (this.state.showingInfoWindow)
-      this.setState({
-        activeMarker: null,
-        showingInfoWindow: false
+  const newPlaceList = places
+      .filter (place => {
+        return place.name.toLowerCase().indexOf(listMarker.toLowerCase()) >= 0;
+      })
+      .map(place => {
+        return (
+          <li key={place.id} className='list-item'>{place.name}</li>
+        );
       });
-  };
 
-renderMarker() {
-  let {
-     map, google, position, mapCenter
-   } = this.props;
+  return (
+      <nav id='menu' className='menu'>
 
-   let pos = position || mapCenter;
-   position = new google.maps.LatLng(pos.lat, pos.lng)
+        <input type='text' placeholder='filter results' className='search-places' value={listMarker}
+        //onChange={(event) => props.updateFilterTerm(event.target.value)} tabIndex={2}
+        />
+          <ul className='places-list'>
+            {newPlaceList}
+          </ul>
+      </nav>
+    );
+};
 
-   const pref = {
-        map: map,
-        position: position
-      };
-      this.marker = new google.maps.Marker(pref);
-      const marker=this.marker;
-}
-  render() {
-    return null;
-  }
-}
-
-Marker.propTypes = {
-//  position: React.PropTypes.object,
-//  map: React.PropTypes.object,
-  //google: React.PropTypes.object
-}
-
-export default Marker;
+export default SideBar;

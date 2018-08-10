@@ -60,25 +60,26 @@ export class MapContainer extends Component {
 
   render() {
     return (
-            <div className='map-sidebar'>
-            <SideBar
-            onClick={this.onClick}
-            selectedPlace={this.state.selectedPlace}
-            showingInfoWindow={this.state.showingInfoWindow}
-            places={this.state.places}
-            listMarker={this.state.listMarker}
-            updatelistMarker={this.updatelistMarker}
-            listItemClicked={this.listItemClicked}
-        //  getmarkerRef={this.getMarkerRef}
+      <div className='map-sidebar'>
 
-            />
+      <SideBar
+      onClick={this.onClick}
+      selectedPlace={this.state.selectedPlace}
+      showingInfoWindow={this.state.showingInfoWindow}
+      places={this.state.places}
+      listMarker={this.state.listMarker}
+      updatelistMarker={this.updatelistMarker}
+      listItemClicked={this.listItemClicked}
+    //  getmarkerRef={this.getMarkerRef}
+
+      />
 
                 <Map
                 google={this.props.google}
                 zoom={14}
                 initialCenter={places[0].location}
                 mapCenter={mapCenter}
-                style={{width: '75%', height: '520px', position: 'fixed', left:'25%'}}
+                style={{width: '75%', height: '520px', position: 'relative', display:'block', float:'right' }}
                 className={'map'} role={"application"} tabIndex={"0"}
                 //markerRef={this.getMarkerRef}
                 >
@@ -112,6 +113,7 @@ export class MapContainer extends Component {
                         {/*<FoursquareContainer place={this.selectedPlace}></FoursquareContainer>*/}
                     </InfoWindow>
                 </Map>
+
 
             </div>
         )

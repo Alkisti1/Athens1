@@ -1,9 +1,7 @@
 import React, {Component} from 'react';
 import {GoogleApiWrapper, InfoWindow, Map, Marker} from 'google-maps-react';
 import {places, mapCenter} from './ListPlaces';
-import SideBar from './Marker';
-import escapeRegExp from 'escape-string-regexp';
-import sortBy from 'sort-by';
+import SideBar from './SideBar';
 
 export class MapContainer extends Component {
 
@@ -20,50 +18,59 @@ export class MapContainer extends Component {
             selectedPlace: {},
              // Stores the term to filter both markers and list items
             listMarker: '',
-            //center when marker listItemClicked
-            mapCenter: mapCenter,
+            //all markers on the map
+            markers:[],
+            //the data desplayed for selectedPlace
+            selectedPlaceData:{}
 }
+//https://www.andreasreiterer.at/bind-callback-function-react/
         this.onClick = this.onClick.bind(this);
+        this.updatelistMarker=this.updatelistMarker.bind(this);
+        this.getMarkerRef=this.getMarkerRef.bind(this);
     }
-
-    updatelistMarker = (term) => {
-       this.setState({ listMarker: term });
+//filter through results in Search Boxx
+    updatelistMarker = (query) => {
+       this.setState({ listMarker: query });
      }
+//Click Item on the list to show Infowindow
+  listItemClicked = (placeName) => {
+    console.log(placeName);
+    };
 
-    listItemClicked = (placeName) => {
-       console.log(placeName);
-     }
-      getMarkerRef = (ref) => {
-       console.log(ref);
-     }
+     getMarkerRef = (ref) => {
+        console.log(ref)
+         }
 
 
-    onClick = (props, marker, e) => {
+  onClick = (props, marker, e) => {
         this.setState({
             selectedPlace: props,
             activeMarker: marker,
             showingInfoWindow: true,
-            mapCenter:props.position
-        });
+            selectedPlaceData: {}
+          });
+
+    //    clearData = () => {
+    // this.setState({
+    //  showingInfoWindow: false,
+    //   activeMarker: null
+    // });
+ //}
     };
 
-
-
-
-    render() {
-
-
-
-        return (
+  render() {
+    return (
             <div className='map-sidebar'>
             <SideBar
-            onClickItem={this.onClick}
+            onClick={this.onClick}
             selectedPlace={this.state.selectedPlace}
             showingInfoWindow={this.state.showingInfoWindow}
             places={this.state.places}
             listMarker={this.state.listMarker}
-            updatelistMarker={this.state.updatelistMarker}
-          //  listItemClicked={this.listItemClicked}
+            updatelistMarker={this.updatelistMarker}
+            listItemClicked={this.listItemClicked}
+        //  getmarkerRef={this.getMarkerRef}
+
             />
 
                 <Map
@@ -71,8 +78,10 @@ export class MapContainer extends Component {
                 zoom={14}
                 initialCenter={places[0].location}
                 mapCenter={mapCenter}
-                   style={{width: '75%', height: '520px', position: 'fixed', left:'25%'}}
-                className={'map'} role={"application"} tabIndex={"0"}>
+                style={{width: '75%', height: '520px', position: 'fixed', left:'25%'}}
+                className={'map'} role={"application"} tabIndex={"0"}
+                //markerRef={this.getMarkerRef}
+                >
 
 
                     {places.map((place) => (
@@ -81,9 +90,9 @@ export class MapContainer extends Component {
                         position={place.location}
                         title={place.name}
                         onClick={this.onClick}
-                        ref={this.markerRef}
+                        listMarker={this.listMarker}
                         //https://stackblitz.com/edit/react-mu8lid
-                        // ref={this.getMarkerRef}
+                      markerRef={this.getMarkerRef}
                          >
                         </Marker>
                     ))}
@@ -91,7 +100,12 @@ export class MapContainer extends Component {
                     <InfoWindow
                         position={this.state.selectedPlace.location}
                         marker={this.state.activeMarker}
-                        visible={this.state.showingInfoWindow}>
+                        visible={this.state.showingInfoWindow}
+                        clearData={this.clearData}
+                        //markerRef={this.getMarkerRef}
+
+
+                        >
                         <div className='selectedPlace'>
                             <h1>{this.state.selectedPlace.title}</h1>
                         </div>

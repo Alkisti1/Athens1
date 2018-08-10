@@ -1,36 +1,34 @@
-import React, {Component} from 'react';
-import {places} from './ListPlaces';
+import React from 'react';
 
+const SideBar = (props) => {
 
-export default class SideBar extends Component {
+  const { places, listMarker } = props;
 
+// https://medium.com/@joomiguelcunha/learn-map-filter-and-reduce-in-javascript-ea59009593c4
+  const newPlaceList = places
+      .filter (place => {
+        return place.name.toLowerCase().indexOf(listMarker.toLowerCase()) >= 0;
+      })
+      .map(place => {
+        return (
+          <li key={place.id} className='list-item'
+          onClick={props.listItemClicked.bind(this, place)}>{place.name}
+          </li>
+        );
+      });
 
-
-
-render() {
   return (
-    <div className='list-places'>
-    <div className='list-places-top'>
-    <input
-    className='search-places'
-    type='text'
-    placeholder='Search places'
-    />
-    </div>
-    <ul className='places-list'>
-    {places.map((place) => (
-      <li key={place.id}
-className='list-item'
-onClick={this.props.listItemClicked.bind(this, place)}
+      <nav id='menu' className='menu'>
 
-      >
-      {place.name}
-      </li>
-    ))}
+        <input type='text' placeholder='filter results' className='search-places' value={listMarker}
+        onChange={(event) => props.updatelistMarker(event.target.value)}
+        tabIndex={2}
+        />
+          <ul className='places-list'>
+            {newPlaceList}
+          </ul>
+      </nav>
+    );
+};
 
-    </ul>
-    </div>
-  )
-}
-
-}
+export default SideBar;

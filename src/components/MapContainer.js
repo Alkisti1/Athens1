@@ -32,6 +32,7 @@ export class MapContainer extends Component {
     updatelistMarker = (query) => {
        this.setState({ listMarker: query });
      }
+
 //Click Item on the list to show Infowindow
   listItemClicked = (placeName) => {
     console.log(placeName);
@@ -50,6 +51,13 @@ export class MapContainer extends Component {
             selectedPlaceData: {}
           });
 
+          //fetch fourquare data
+    //      fetch(url)
+        //      .then(
+          //        function (response) {
+              //        if (response.status !== 200) {
+                  //        self.state.infowindow.setContent("Sorry data can't be loaded");
+
     //    clearData = () => {
     // this.setState({
     //  showingInfoWindow: false,
@@ -63,6 +71,7 @@ export class MapContainer extends Component {
       <div className='map-sidebar'>
 
       <SideBar
+
       onClick={this.onClick}
       selectedPlace={this.state.selectedPlace}
       showingInfoWindow={this.state.showingInfoWindow}
@@ -79,9 +88,9 @@ export class MapContainer extends Component {
                 zoom={14}
                 initialCenter={places[0].location}
                 mapCenter={mapCenter}
-                style={{width: '75%', height: '520px', position: 'relative', display:'block', float:'right' }}
+                style={{width: '75%', height: '520px', position: 'relative', display:'block', float:'right', top:'-520px' }}
                 className={'map'} role={"application"} tabIndex={"0"}
-                //markerRef={this.getMarkerRef}
+                ref={'map'}
                 >
 
 
@@ -93,7 +102,7 @@ export class MapContainer extends Component {
                         onClick={this.onClick}
                         listMarker={this.listMarker}
                         //https://stackblitz.com/edit/react-mu8lid
-                      markerRef={this.getMarkerRef}
+                    ref={this.getMarkerRef}
                          >
                         </Marker>
                     ))}
@@ -103,7 +112,6 @@ export class MapContainer extends Component {
                         marker={this.state.activeMarker}
                         visible={this.state.showingInfoWindow}
                         clearData={this.clearData}
-                        //markerRef={this.getMarkerRef}
 
 
                         >

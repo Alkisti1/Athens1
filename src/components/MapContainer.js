@@ -28,9 +28,9 @@ export class MapContainer extends Component {
         this.onClick = this.onClick.bind(this);
         this.updatelistMarker = this.updatelistMarker.bind(this);
         this.getMarkerRef = this.getMarkerRef.bind(this);
-        this.listItemClicked = this.listItemClicked.bind(this);
+        //this.listItemClicked = this.listItemClicked.bind(this);
     }
-//filter through results in Search Boxx
+//filter through results in Search Box
     updatelistMarker = (query) => {
        this.setState({ listMarker: query });
      }
@@ -43,12 +43,7 @@ export class MapContainer extends Component {
             selectedPlaceData: {},
           });
         }
-//const placeId = this.state.selectedPlace;
-//getDetails(placeId)
-//.then(selectedPlaceData => {
-  ///this.setState({ selectedPlaceData})
-//})
-//.catch ('error')
+
 
 //Click Item on the list to show Infowindow
   listItemClicked = (placeName) => {

@@ -14,7 +14,7 @@ const SideBar = (props) => {
       .map(place => {
         return (
           <li key={place.id} className='list-item'
-          tabIndex={0} role='MenuLocationItem'
+          tabIndex={0}    aria-label="Type a location name here to filter places"
           onClick={props.listItemClicked.bind(this, place.name)}>{place.name}
           </li>
         );

@@ -26,16 +26,27 @@ export class MapContainer extends Component {
 }
 //https://www.andreasreiterer.at/bind-callback-function-react/
         this.onClick = this.onClick.bind(this);
+        this.onInfoWindowClose=this.onInfoWindowClose.bind(this);
         this.updatelistMarker = this.updatelistMarker.bind(this);
         this.getMarkerRef = this.getMarkerRef.bind(this);
         //this.listItemClicked = this.listItemClicked.bind(this);
     }
 //filter through results in Search Box
     updatelistMarker = (query) => {
-       this.setState({ listMarker: query });
+       this.setState({ listMarker: query});
      }
 
   onClick = (props, marker, e) => {
+//reference the newListMarkers
+const markersBounce = this.state.markers;
+//make the marker that is clicked bounce and stop the rest of  the markers from bouncing
+markersBounce.forEach(m => {
+  if (m.marker.title === marker.title) {
+    m.marker.setAnimation(1);
+  } else {
+    m.marker.setAnimation(null);
+  }
+})
         this.setState({
             selectedPlace: props,
             activeMarker: marker,
@@ -43,7 +54,6 @@ export class MapContainer extends Component {
             selectedPlaceData: {},
           });
         }
-
 
 //Click Item on the list to show Infowindow
   listItemClicked = (placeName) => {
@@ -59,7 +69,18 @@ this.onClick(newListMarkers[0].props, newListMarkers[0].marker);
       }));
     }
   }
+//Set bouncing animation to null when infowindow closes
+//https://github.com/fullstackreact/google-maps-react/blob/master/examples/components/clickableMarkers.js
 
+onInfoWindowClose= () => {
+  const markersBounce = this.state.markers;
+markersBounce.forEach(m => m.marker.setAnimation(null))
+this.setState({
+  activeMarker: null,
+    showingInfoWindow: false,
+    selectedPlaceData: {},
+})
+}
 
   render() {
     return (
@@ -85,19 +106,24 @@ this.onClick(newListMarkers[0].props, newListMarkers[0].marker);
                 style={{width: '75%', height: '520px', position: 'relative', display:'block', float:'right', top:'-520px' }}
                 className={'map'} role={"application"} tabIndex={"0"}
                 ref={'map'}
+
                 >
 
-
-                    {places.map((place) => (
+{/*map the list of places to create marker and filter through list places to show/hide marker*/}
+                    {places.filter (place => {
+                      return place.name.toLowerCase().indexOf(this.state.listMarker.toLowerCase()) >= 0;
+                    })
+                    .map((place) => (
                         <Marker
                         key={place.id}
                         placeId={place.id}
                         position={place.location}
                         title={place.name}
                         onClick={this.onClick}
-                        listMarker={this.listMarker}
                         //https://stackblitz.com/edit/react-mu8lid
                     ref={this.getMarkerRef}
+                    clearMarker={this.clearMarker}
+
                          >
                         </Marker>
                     ))}
@@ -106,7 +132,8 @@ this.onClick(newListMarkers[0].props, newListMarkers[0].marker);
                         position={this.state.selectedPlace.location}
                         marker={this.state.activeMarker}
                         visible={this.state.showingInfoWindow}
-                        clearData={this.clearData}
+                        onClose={this.onInfoWindowClose}
+                        //clearMarker={this.clearMarker}
                         options={{maxWidth: 200}}
                         >
                         <div className='selectedPlace'>

@@ -12,7 +12,7 @@ const SideBar = (props) => {
       .map(place => {
         return (
           <li key={place.id} className='list-item'
-          onClick={props.listItemClicked.bind(this, place)}>{place.name}
+          onClick={props.listItemClicked.bind(this, place.name)}>{place.name}
           </li>
         );
       });

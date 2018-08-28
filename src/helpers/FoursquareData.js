@@ -1,16 +1,15 @@
-const clientID = JZCAWJMRWCKLLIOKPYZR3VWDAKAFKGT1NTTKLIR2HJYMIXBY
-const clientSecret = UAULBVBHNHJUYBUQFMN0EAZKZ5GS3R5DU5WYUR0EFHPTM31K
-const version = "20180810";
+const clientID = 'JZCAWJMRWCKLLIOKPYZR3VWDAKAFKGT1NTTKLIR2HJYMIXBY';
+const clientSecret = 'UAULBVBHNHJUYBUQFMN0EAZKZ5GS3R5DU5WYUR0EFHPTM31K';
+const version = '20180810';
 
 
 export const getDetails = (id) =>
-fetch(`https://api.foursquare.com/v2/venues/${place.id}?&client_id=${clientID}&client_secret=${clientSecret }&v=${version}`)
-.then(res => res.json())
+fetch(`https://api.foursquare.com/v2/venues/${id}?&client_id=${clientID}&client_secret=${clientSecret}&v=${version}`)
+.then(response => response.json())
+.then(data => data.response.venue)
+
 //if there is an error dispaly the message
 .catch('error')
-.thne(info => {
-  const fsData = info.response.venues[0].bestPhoto.prefix
-})
 
 
 
@@ -29,14 +28,14 @@ fetch(`https://api.foursquare.com/v2/venues/${place.id}?&client_id=${clientID}&c
 
                  // Examine the text in the response
           //       response.json().then(function (data) {
-                     var location_data = data.response.venues[0];
-                     var verified = '<b>Verified Location: </b>' + (location_data.verified ? 'Yes' : 'No') + '<br>';
-                     var checkinsCount = '<b>Number of CheckIn: </b>' + location_data.stats.checkinsCount + '<br>';
-                     var usersCount = '<b>Number of Users: </b>' + location_data.stats.usersCount + '<br>';
-                     var tipCount = '<b>Number of Tips: </b>' + location_data.stats.tipCount + '<br>';
-                     var readMore = '<a href="https://foursquare.com/v/'+ location_data.id +'" target="_blank">Read More on Foursquare Website</a>'
-                     self.state.infowindow.setContent(checkinsCount + usersCount + tipCount + verified + readMore);
-                 });
+            //         var location_data = data.response.venues[0];
+            //         var verified = '<b>Verified Location: </b>' + (location_data.verified ? 'Yes' : 'No') + '<br>';
+            //         var checkinsCount = '<b>Number of CheckIn: </b>' + location_data.stats.checkinsCount + '<br>';
+            //         var usersCount = '<b>Number of Users: </b>' + location_data.stats.usersCount + '<br>';
+            //         var tipCount = '<b>Number of Tips: </b>' + location_data.stats.tipCount + '<br>';
+            //         var readMore = '<a href="https://foursquare.com/v/'+ location_data.id +'" target="_blank">Read More on Foursquare Website</a>'
+            //         self.state.infowindow.setContent(checkinsCount + usersCount + tipCount + verified + readMore);
+          //       });
         //     }
         // )
       //   .catch(function (err) {

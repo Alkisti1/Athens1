@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {GoogleApiWrapper, InfoWindow, Map, Marker} from 'google-maps-react';
 import {places, mapCenter} from './ListPlaces';
 import SideBar from './SideBar';
+//import {getDetails} from '../helpers/FoursquareData'
 
 export class MapContainer extends Component {
 
@@ -20,51 +21,50 @@ export class MapContainer extends Component {
             listMarker: '',
             //all markers on the map
             markers:[],
-            //the data desplayed for selectedPlace
+            //the data desplayed for selectedPlace (Foursquare)
             selectedPlaceData:{}
 }
 //https://www.andreasreiterer.at/bind-callback-function-react/
         this.onClick = this.onClick.bind(this);
-        this.updatelistMarker=this.updatelistMarker.bind(this);
-        this.getMarkerRef=this.getMarkerRef.bind(this);
+        this.updatelistMarker = this.updatelistMarker.bind(this);
+        this.getMarkerRef = this.getMarkerRef.bind(this);
+        this.listItemClicked = this.listItemClicked.bind(this);
     }
 //filter through results in Search Boxx
     updatelistMarker = (query) => {
        this.setState({ listMarker: query });
      }
 
-//Click Item on the list to show Infowindow
-  listItemClicked = (placeName) => {
-    console.log(placeName);
-    };
-
-     getMarkerRef = (ref) => {
-        console.log(ref)
-         }
-
-
   onClick = (props, marker, e) => {
         this.setState({
             selectedPlace: props,
             activeMarker: marker,
             showingInfoWindow: true,
-            selectedPlaceData: {}
+            selectedPlaceData: {},
           });
+        }
+//const placeId = this.state.selectedPlace;
+//getDetails(placeId)
+//.then(selectedPlaceData => {
+  ///this.setState({ selectedPlaceData})
+//})
+//.catch ('error')
 
-          //fetch fourquare data
-    //      fetch(url)
-        //      .then(
-          //        function (response) {
-              //        if (response.status !== 200) {
-                  //        self.state.infowindow.setContent("Sorry data can't be loaded");
-
-    //    clearData = () => {
-    // this.setState({
-    //  showingInfoWindow: false,
-    //   activeMarker: null
-    // });
- //}
+//Click Item on the list to show Infowindow
+  listItemClicked = (placeName) => {
+const newListMarkers = this.state.markers.filter(marker =>
+marker.props.title === placeName);
+this.onClick(newListMarkers[0].props, newListMarkers[0].marker);
     };
+
+  getMarkerRef = (ref) => {
+    if (ref !== null) {
+      this.setState(prevState => ({
+        markers: [...prevState.markers, ref]
+      }));
+    }
+  }
+
 
   render() {
     return (
@@ -79,13 +79,12 @@ export class MapContainer extends Component {
       listMarker={this.state.listMarker}
       updatelistMarker={this.updatelistMarker}
       listItemClicked={this.listItemClicked}
-    //  getmarkerRef={this.getMarkerRef}
-
+    // getmarkerRef={this.getMarkerRef}
       />
 
                 <Map
                 google={this.props.google}
-                zoom={14}
+                zoom={12}
                 initialCenter={places[0].location}
                 mapCenter={mapCenter}
                 style={{width: '75%', height: '520px', position: 'relative', display:'block', float:'right', top:'-520px' }}
@@ -97,6 +96,7 @@ export class MapContainer extends Component {
                     {places.map((place) => (
                         <Marker
                         key={place.id}
+                        placeId={place.id}
                         position={place.location}
                         title={place.name}
                         onClick={this.onClick}
@@ -112,11 +112,10 @@ export class MapContainer extends Component {
                         marker={this.state.activeMarker}
                         visible={this.state.showingInfoWindow}
                         clearData={this.clearData}
-
-
+                        options={{maxWidth: 200}}
                         >
                         <div className='selectedPlace'>
-                            <h1>{this.state.selectedPlace.title}</h1>
+                            <h3>{this.state.selectedPlace.title}</h3>
                         </div>
                         {/*<FoursquareContainer place={this.selectedPlace}></FoursquareContainer>*/}
                     </InfoWindow>

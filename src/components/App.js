@@ -10,8 +10,7 @@ class App extends Component {
         return (
             <div  className='map-container'>
             <Top/>
-                <MapContainer
-/>
+                <MapContainer/>
             </div>
         );
     }

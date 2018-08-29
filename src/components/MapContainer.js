@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {GoogleApiWrapper, InfoWindow, Map, Marker} from 'google-maps-react';
 import {places, mapCenter} from './ListPlaces';
 import SideBar from './SideBar';
+import MapStyles from '../helpers/MapStyles';
 import {clientID, clientSecret, version} from '../helpers/FoursquareData'
 
 export class MapContainer extends Component {
@@ -24,7 +25,7 @@ export class MapContainer extends Component {
             //the data desplayed for selectedPlace (Foursquare)
             selectedPlaceData:{},
             //display an error message when fs data are not available
-            errorFS:''
+            errorFs:''
 }
 //https://www.andreasreiterer.at/bind-callback-function-react/
         this.onClick = this.onClick.bind(this);
@@ -39,16 +40,16 @@ export class MapContainer extends Component {
 
 //activate marker and infowindow (google-maps-react)
   onClick = (props, marker, e) => {
-//reference the newListMarkers
-const markersBounce = this.state.markers;
-//make the marker that is clicked bounce and stop the rest of  the markers from bouncing
-markersBounce.forEach(m => {
-  if (m.marker.title === marker.title) {
-    m.marker.setAnimation(1);
-  } else {
-    m.marker.setAnimation(null);
-  }
-})
+    //reference the newListMarkers
+    const markersBounce = this.state.markers;
+    //make the marker that is clicked bounce and stop the rest of  the markers from bouncing
+    markersBounce.forEach(m => {
+      if (m.marker.title === marker.title) {
+        m.marker.setAnimation(1);
+      } else {
+        m.marker.setAnimation(null);
+      }
+    });
         this.setState({
           //set a refernce to map (google-maps-react)
             selectedPlace: props,
@@ -59,20 +60,38 @@ markersBounce.forEach(m => {
             //clear selectedPlaceData
             selectedPlaceData: {},
             //Display error message when fetching foursquare fsData
-            errorFS:'',
+            errorFs:false,
           });
 
 //fetch foursquare data onClick and catch errors
 const fsData = marker.placeId;
-
+        const self= this;
         fetch(`https://api.foursquare.com/v2/venues/${fsData}?&client_id=${clientID}&client_secret=${clientSecret}&v=${version}`)
-        .then(response => response.json())
-        .catch(err => this.setState({errorFS: err}))
-        .then(data => {
-const placesInfo = data.response.venue;
-this.setState({selectedPlaceData:placesInfo})
-console.log(data.response.venue)
+        .then((response) => {
+          console.log(response);
+          if(response.status === 429) {
+            self.setState({errorFs: true});
+            return;
+          }
+          return response.json()
         })
+        .then((data) => {
+          if (data) {
+              console.log(data);
+              const placesInfo = data.response.venue;
+              if (placesInfo.rating) {
+                this.setState({selectedPlaceData:placesInfo})
+                console.log(data.response.venue)
+              } else {
+                this.setState({errorFs: true})
+              }
+            }
+        })
+        .catch((err) => {
+          console.log(err);
+           this.setState({errorFs:  true});
+        })
+
     }
 
 //Click Item on the list associate it with Marker and show Infowindow and call onCLick function
@@ -105,6 +124,7 @@ this.setState({
 
   render() {
     return (
+      <div className="container">
       <div className='map-sidebar'>
 
       <SideBar
@@ -117,14 +137,16 @@ this.setState({
       updatelistMarker={this.updatelistMarker}
       listItemClicked={this.listItemClicked}
       />
-
+</div>
+<div className='map-container'>
                 <Map
                 google={this.props.google}
-                zoom={14}
+                zoom={13.5}
                 initialCenter={places[0].location}
                 mapCenter={mapCenter}
                 style={{width: '75%', height: '620px', position: 'relative', display:'flex', float:'right', top:'-620px' }}
-                className={'map'} role={"application"} tabIndex={"0"}
+                styles ={MapStyles}
+                mapElement={<main className={'map'} role={"application"} tabIndex={"0"}></main>}
                 ref={'map'}
 
                 >
@@ -153,12 +175,12 @@ this.setState({
                         visible={this.state.showingInfoWindow}
                         onClose={this.onInfoWindowClose}
                         selectedPlaceData={this.state.selectedPlaceData}
-                        errorFS={this.state.errorFS}
+                        errorFs={this.state.errorFs}
                         options={{maxWidth: 200}}
                         >
                         <section className='selectedPlace' tabIndex='0' key={this.state.selectedPlace.id}>
                             <h3>{this.state.selectedPlace.title}</h3>
-                        {this.state.errorFS !== '' ?
+                        {this.state.errorFs ?
                                     <p>Cannot fetch data from Foursquare!</p>
                         :
                           <article>
@@ -176,6 +198,7 @@ this.setState({
 
 
             </div>
+           </div>
         )
     }
 }

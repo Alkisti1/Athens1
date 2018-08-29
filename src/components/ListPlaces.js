@@ -1,7 +1,7 @@
 export const mapCenter =  {lat: 37.975, lng: 23.7225}
 
     export  const places = [{
-          id: '4adcdadff964a5205b5821e3',
+          id: '4adcdadff964a5205b5821e',
           name: 'Acropolis of Athens',
           location: {lat: 37.971048565332055, lng: 23.725945971799874}
       },

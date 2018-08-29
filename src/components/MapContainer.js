@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {GoogleApiWrapper, InfoWindow, Map, Marker} from 'google-maps-react';
 import {places, mapCenter} from './ListPlaces';
 import SideBar from './SideBar';
-//import {getDetails} from '../helpers/FoursquareData'
+import {clientID, clientSecret, version} from '../helpers/FoursquareData'
 
 export class MapContainer extends Component {
 
@@ -28,13 +28,17 @@ export class MapContainer extends Component {
         this.onClick = this.onClick.bind(this);
         this.onInfoWindowClose=this.onInfoWindowClose.bind(this);
         this.updatelistMarker = this.updatelistMarker.bind(this);
+        this.getDetails = this.getDetails.bind(this);
         this.getMarkerRef = this.getMarkerRef.bind(this);
-        //this.listItemClicked = this.listItemClicked.bind(this);
     }
 //filter through results in Search Box
     updatelistMarker = (query) => {
        this.setState({ listMarker: query});
      }
+//fetch foursquare FoursquareData
+getDetails= (placeInfo) => {
+  this.setState({ selectedPlaceData: placeInfo})
+}
 
   onClick = (props, marker, e) => {
 //reference the newListMarkers
@@ -53,7 +57,17 @@ markersBounce.forEach(m => {
             showingInfoWindow: true,
             selectedPlaceData: {},
           });
-        }
+//fetch foursquare data
+const fsData = marker.placeId;
+
+        fetch(`https://api.foursquare.com/v2/venues/${fsData}?&client_id=${clientID}&client_secret=${clientSecret}&v=${version}`)
+        .then(response => response.json())
+        .catch(err => console.log('Couldn\'t retrieve venue details with ', err))
+        .then(data => {
+const placesInfo = data.response.venue;
+console.log(data.response.venue)        })
+
+    }
 
 //Click Item on the list to show Infowindow
   listItemClicked = (placeName) => {

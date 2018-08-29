@@ -22,24 +22,22 @@ export class MapContainer extends Component {
             //all markers on the map
             markers:[],
             //the data desplayed for selectedPlace (Foursquare)
-            selectedPlaceData:{}
+            selectedPlaceData:{},
+            //display an error message when fs data are not available
+            errorFS:''
 }
 //https://www.andreasreiterer.at/bind-callback-function-react/
         this.onClick = this.onClick.bind(this);
         this.onInfoWindowClose=this.onInfoWindowClose.bind(this);
         this.updatelistMarker = this.updatelistMarker.bind(this);
-        this.getDetails = this.getDetails.bind(this);
         this.getMarkerRef = this.getMarkerRef.bind(this);
     }
-//filter through results in Search Box
+//filter through results in Search Box when typing
     updatelistMarker = (query) => {
        this.setState({ listMarker: query});
      }
-//fetch foursquare FoursquareData
-getDetails= (placeInfo) => {
-  this.setState({ selectedPlaceData: placeInfo})
-}
 
+//activate marker and infowindow (google-maps-react)
   onClick = (props, marker, e) => {
 //reference the newListMarkers
 const markersBounce = this.state.markers;
@@ -52,30 +50,38 @@ markersBounce.forEach(m => {
   }
 })
         this.setState({
+          //set a refernce to map (google-maps-react)
             selectedPlace: props,
+            //set active marker
             activeMarker: marker,
+            //showing infowindow
             showingInfoWindow: true,
+            //clear selectedPlaceData
             selectedPlaceData: {},
+            //Display error message when fetching foursquare fsData
+            errorFS:'',
           });
-//fetch foursquare data
+
+//fetch foursquare data onClick and catch errors
 const fsData = marker.placeId;
 
         fetch(`https://api.foursquare.com/v2/venues/${fsData}?&client_id=${clientID}&client_secret=${clientSecret}&v=${version}`)
         .then(response => response.json())
-        .catch(err => console.log('Couldn\'t retrieve venue details with ', err))
+        .catch(err => this.setState({errorFS: err}))
         .then(data => {
 const placesInfo = data.response.venue;
-console.log(data.response.venue)        })
-
+this.setState({selectedPlaceData:placesInfo})
+console.log(data.response.venue)
+        })
     }
 
-//Click Item on the list to show Infowindow
+//Click Item on the list associate it with Marker and show Infowindow and call onCLick function
   listItemClicked = (placeName) => {
 const newListMarkers = this.state.markers.filter(marker =>
 marker.props.title === placeName);
 this.onClick(newListMarkers[0].props, newListMarkers[0].marker);
     };
-
+//Getting all markers using ref and pushing them all to the state.markers.array
   getMarkerRef = (ref) => {
     if (ref !== null) {
       this.setState(prevState => ({
@@ -83,6 +89,7 @@ this.onClick(newListMarkers[0].props, newListMarkers[0].marker);
       }));
     }
   }
+
 //Set bouncing animation to null when infowindow closes
 //https://github.com/fullstackreact/google-maps-react/blob/master/examples/components/clickableMarkers.js
 
@@ -109,15 +116,14 @@ this.setState({
       listMarker={this.state.listMarker}
       updatelistMarker={this.updatelistMarker}
       listItemClicked={this.listItemClicked}
-    // getmarkerRef={this.getMarkerRef}
       />
 
                 <Map
                 google={this.props.google}
-                zoom={12}
+                zoom={14}
                 initialCenter={places[0].location}
                 mapCenter={mapCenter}
-                style={{width: '75%', height: '520px', position: 'relative', display:'block', float:'right', top:'-520px' }}
+                style={{width: '75%', height: '620px', position: 'relative', display:'flex', float:'right', top:'-620px' }}
                 className={'map'} role={"application"} tabIndex={"0"}
                 ref={'map'}
 
@@ -137,7 +143,6 @@ this.setState({
                         //https://stackblitz.com/edit/react-mu8lid
                     ref={this.getMarkerRef}
                     clearMarker={this.clearMarker}
-
                          >
                         </Marker>
                     ))}
@@ -147,13 +152,25 @@ this.setState({
                         marker={this.state.activeMarker}
                         visible={this.state.showingInfoWindow}
                         onClose={this.onInfoWindowClose}
-                        //clearMarker={this.clearMarker}
+                        selectedPlaceData={this.state.selectedPlaceData}
+                        errorFS={this.state.errorFS}
                         options={{maxWidth: 200}}
                         >
-                        <div className='selectedPlace'>
+                        <section className='selectedPlace' tabIndex='0' key={this.state.selectedPlace.id}>
                             <h3>{this.state.selectedPlace.title}</h3>
-                        </div>
-                        {/*<FoursquareContainer place={this.selectedPlace}></FoursquareContainer>*/}
+                        {this.state.errorFS !== '' ?
+                                    <p>Cannot fetch data from Foursquare!</p>
+                        :
+                          <article>
+                          <p>The rating is: {this.state.selectedPlaceData.rating}</p>
+                          <div>
+                          <a className="details-more" href={this.state.selectedPlaceData.canonicalUrl} aria-label="More at Foursquare">
+                          Read more on Foursquare
+                          </a>
+                          </div>
+                          </article>
+                        }
+                        </section>
                     </InfoWindow>
                 </Map>
 

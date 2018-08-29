@@ -23,14 +23,12 @@ body {
 
 .menu {
   display:block;
-  height:520px;
-  width:30%;
+  height:620px;
 }
 .map-sidebar {
   background-color: #eceff1;
-  height: 650px;
   box-sizing: border-box;
-/* display: flex;*/
+  width:30%;
 }
 
 .list-contacts-top
@@ -42,7 +40,7 @@ body {
 }
 
 .search-places {
-  padding: 30px 45px 20px 60px;
+  padding: 20px 45px 20px 60px;
   background-image: url('./icons/search.svg');
   background-repeat: no-repeat;
   background-position: 20px center;
@@ -50,9 +48,7 @@ body {
   background-color: white;
   font-size: 1.2em;
   border: 0;
-  font-size: 25px;
-  width: 85%;
-
+  font-size: 20px;
 }
 
 
@@ -61,11 +57,9 @@ body {
   margin: 1em 0 0 0;
   list-style: none;
   padding: 0.5em;
-  background-color: #cfd8dc;
+  /*background-color: #cfd8dc;*/
   height:80%;
   overflow-y:auto;
-  width: 85%;
-
 }
 
 .places-list .list-item {
@@ -76,7 +70,7 @@ body {
   border-bottom: 2px solid #b0bec5;
   cursor: pointer;
   transition: all 0.4s ease-in-out;
-  height: 80px;
+  height: 64px;
   width: 85%;
 }
 
@@ -111,68 +105,41 @@ body {
   padding-right: 30px;
 }
 
-@media (max-width: 769px) {
-  .top-title {
-    text-align: center;
-  }
-
-  .top-title span {
-    display: inline-block;
-    width: 100%;
-  }
-}
-
-
-
-
-@media (max-width: 1179px) {
-  .side-container {
-    width: 40%;
-  }
-}
-
-@media (max-width: 679px) {
+@media screen and (min-width: 640px) and (max-width: 890px) {
   .menu {
-    width: 30%;
+      height: 620px;
   }
-  .map {
-    width: 70%;
-    height: 600px;
-  }
-  .places-list .list-item {
-    font-size: 10px;
-    height: 40px;
-  }
-  .list-places-search,
-  .places-list {
-    margin: 0em 0 0 0;
-    padding: 0em;
-  }
+
   .search-places {
-    padding: 10px 8px 8px 40px;
-    background-image: url('./icons/search.svg');
-    background-repeat: no-repeat;
-    background-position: 20px center;
-    background-size: 1.2em;
-    background-color: white;
-    font-size: 0.6em;
+    padding: 20px 45px 20px 40px;
+    background-position: 10px center;
+    font-size: 1.2em;
+    font-size: 15px;
+}
+
+.places-list .list-item {
     font-size: 12px;
-
-  }
-.gm-style-pbc {
-  height:300px;
+    height: 45px;
+}
 }
 
-
+@media screen and (max-width:639px) {
+  .top-title {
+    font-size: 14px;
+    font-weight: 300;
+    text-align: right;
 }
-
-.element.style.map {
-  height: 500px;
-  width: 60%;
+.map-sidebar {
+width: 100%;
 }
-
-@media (max-width: 1179px) {
-  .map {
-    width: 60%;
-  }
+.menu {
+    height: 950px;
+}
+.search-places {
+    width: 100%;
+}
+.places-list .list-item {
+    height: auto;
+    width:100%;
+}
 }

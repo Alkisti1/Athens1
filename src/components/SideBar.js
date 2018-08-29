@@ -14,20 +14,20 @@ const SideBar = (props) => {
       .map(place => {
         return (
           <li key={place.id} className='list-item'
-          tabIndex={0}    aria-label="Type a location name here to filter places"
+          tabIndex={0} aria-label="Type a location name here to filter places"
           onClick={props.listItemClicked.bind(this, place.name)}>{place.name}
           </li>
         );
       });
 
   return (
-      <nav id='menu' className='menu'>
+      <nav id='menu' className='menu' role='menubar' aria-label='filter list places'>
 
         <input type='text' placeholder='filter results' className='search-places' value={listMarker}
         onChange={(event) => props.updatelistMarker(event.target.value)}
         tabIndex={0} aria-label='typelocation'
         />
-          <ul className='places-list'>
+          <ul className='places-list' tabIndex='0' aria-label='PlaceList'>
             {newPlaceList}
           </ul>
       </nav>

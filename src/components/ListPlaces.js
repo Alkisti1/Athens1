@@ -5,7 +5,7 @@ export const mapCenter =  {lat: 37.975, lng: 23.7225}
           name: 'Acropolis of Athens',
           location: {lat: 37.971048565332055, lng: 23.725945971799874}
       },
-      {   id: '4deefb944765f83613cdba6e',
+      {   id: '4adcdadff964a5205f5821e3',
           name: 'Ancient Agora of Athens',
           location: {lat: 37.975726690729225, lng: 23.723906330394563}
       },

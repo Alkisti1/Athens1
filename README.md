@@ -19,6 +19,11 @@ This is the final project for the Udacity Front End Nanodegree program. The goal
 3. Once done run npm start
 3. Enjoy the app
 
+#### :exclamation: Important :exclamation:
+
+The service worker only works in production mode.
+
+
 ## License
 
 This is an open source project developed for the Udacity Front End Nanodegree.
